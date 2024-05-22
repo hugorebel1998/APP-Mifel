@@ -1,11 +1,13 @@
 <script setup>
-import { reactive, ref, watch } from "vue";
+import { reactive, watch } from "vue";
+
+import postAPI from '@/services/bin/bin.api'
 
 const form = reactive({
   nombre: '',
   paterno: '',
   materno: '',
-  curp: 'gush960803hdflgg03',
+  curp: '',
   rfc: '',
   cp: '',
   calle: '',
@@ -24,7 +26,6 @@ const inicializarErrores = () => {
   }
 };
 
-
 inicializarErrores();
 
 const validateField = (field) => {
@@ -40,7 +41,7 @@ const validateField = (field) => {
     error[`${field}Valid`] = `El campo ${field} solo puede contener letras.`;
 
   } else if (validate_integer.includes(field) && !/^[0-9]+$/.test(form[field])) {
-    error[`${field}Valid`] = `El campo ${field} solo aceptar numeros.`;
+    error[`${field}Valid`] = `El campo ${field} solo puede contener numeros.`;
 
   } else if (validate_alfanumerico.includes(field) && !/^[a-zA-Z0-9]+$/.test(form[field])) {
     error[`${field}Valid`] = `El campo ${field} solo puede contener números y letras.`;
@@ -53,27 +54,38 @@ const validateField = (field) => {
 const validateCurp = (curp) => {
 
   curp = curp.trim().toUpperCase();
-  console.log(curp);
 
+  const regex = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z\d]{3}(\d{2})$/;
 
-  if (curp.length !== 18)
-    return;
+  if (!regex.test(curp))
+    return swal("Error", "El CURP que estas ingresando parece estar mal por favor verificarlo", "error");
 
-  let regex = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z\d]{3}$/;
-
-  if (regex.test(curp)) return;
-
-  let diccionario = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-  let suma = 0;
-  for (var i = 0; i < curp.length - 1; i++) {
-    suma += diccionario.indexOf(curp.charAt(i)) * (18 - i);
-  }
-  let residuo = suma % 10;
-  let verificadorCalculado = residuo === 0 ? "0" : diccionario.charAt(residuo);
-  return verificadorCalculado === curp.charAt(17);
-
+  return curp
 }
 
+const validateRFC = (rfc) => {
+  rfc = rfc.trim().toUpperCase();
+
+  if (rfc.length == 13) {
+    const regex = /^[A-Z]{4}[0-9]{6}([A-Z0-9]){3}$/
+    if (!regex.test(rfc))
+      return swal("Error", "El RFC de Persona Física que estas ingresando parece estar mal por favor verificarlo", "error");
+  } else {
+    const regex = /^[A-Z]{3}[0-9]{6}([A-Z0-9]){3}$/
+    if (!regex.test(rfc))
+      return swal("Error", "El RFC de Persona moral que estas ingresando parece estar mal por favor verificarlo", "error");
+  }
+
+  return rfc
+}
+
+const capitalizaUpperCase = (field) => {
+  if (field === 'curp') {
+    form.curp = form.curp.toLocaleUpperCase();
+  } else if (field === 'rfc') {
+    form.rfc = form.rfc.toLocaleUpperCase();
+  }
+}
 
 const validateForm = () => {
   let isValid = true;
@@ -88,17 +100,34 @@ const validateForm = () => {
   return isValid;
 };
 
-const onSubmit = () => {
+const onSubmit = async () => {
 
+  if (!validateForm() || !validateCurp(form.curp) || !validateRFC(form.rfc))
+    return;
 
-  if (!validateCurp(form.curp)) {
-    console.log("CURP valido", form.curp)
-  } else {
-    console.log("CURP invalido", form.curp)
+  const payload = {
+    'infoUsuari': {
+      'nombre': form.nombre,
+      'paterno': form.paterno,
+      'materno': form.materno,
+      'curp': form.curp,
+      'curp': form.rfc
+    },
+    'Domicilio': {
+      'calle': form.calle,
+      'exterior': form.exterior,
+      'interior': form.interior,
+      'cp': form.cp,
+      'estado': form.estado,
+      'delegacion': form.delegacion,
+      'colonia': form.colonia
+    }
+  };
+  const response = await postAPI.crear_post(payload)
+  if (!response.data)
+    swal("Ops", "Algo salio mal...", "warning");
 
-  }
-
-  console.log("Formulario enviado:", form);
+  swal("Nuevo registro", "Se realizo una captura de un nuevo registro.", "success");
 };
 
 for (const field in form) {
@@ -148,7 +177,7 @@ for (const field in form) {
                 <input type="text" v-model="form.curp" class="form-control" :class="{
                   'is-invalid': error.curpValid,
                   'is-valid': !error.curpValid && form.curp,
-                }" />
+                }" @input="capitalizaUpperCase('curp')" maxlength="18" />
                 <small v-if="error.curpValid" class="text-danger mx-2">{{ error.curpValid }}</small>
               </div>
 
@@ -158,7 +187,7 @@ for (const field in form) {
                 <input type="text" v-model="form.rfc" class="form-control" :class="{
                   'is-invalid': error.rfcValid,
                   'is-valid': !error.rfcValid && form.rfc,
-                }" />
+                }" @input="capitalizaUpperCase('rfc')" maxlength="13" />
                 <small v-if="error.rfcValid" class="text-danger mx-2">{{ error.rfcValid }}</small>
 
               </div>
@@ -235,7 +264,10 @@ for (const field in form) {
               </div>
             </div>
             <div class="text-center mt-5">
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <router-link :to="{ name: 'usuarios' }" class="btn btn-outline-secondary mx-2">
+                <i class="fas fa-arrow-left"></i> Atras
+              </router-link>
+              <button type="submit" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Guardar</button>
             </div>
           </form>
         </div>
