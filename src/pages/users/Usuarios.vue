@@ -38,9 +38,9 @@ loadUsuarios();
             <tr v-for="usuario in usuarios" :key="usuario.id">
               <th scope="row">{{ usuario.id }}</th>
               <td>{{ usuario.name }}</td>
-              <td>{{ usuario.username}}</td>
-              <td>{{ usuario.email}}</td>
-              <td>{{ usuario.website}}</td>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.website }}</td>
               <td>
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                   <div class="btn-group" role="group">
@@ -50,7 +50,9 @@ loadUsuarios();
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                       <li>
-                        <a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Editar usuario</a>
+                        <router-link class="dropdown-item" :to="{ name: 'perfil', params: { id: usuario.id } }">
+                          <i class="fas fa-edit"></i> Editar usuario
+                        </router-link>
                       </li>
                       <li>
                         <a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Eliinar usuario</a>
