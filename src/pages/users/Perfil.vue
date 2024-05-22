@@ -36,7 +36,7 @@ const loadUsuario = async (usuario_id) => {
 </script>
 
 <template>
-    <div class="container">
+    <div class="container animate__animated animate__backInLeft">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">

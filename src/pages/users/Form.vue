@@ -1,8 +1,9 @@
 <script setup>
 import { reactive, watch } from "vue";
-
+import { useRouter } from "vue-router";
 import postAPI from '@/services/bin/bin.api'
 
+const route = useRouter();
 const form = reactive({
   nombre: '',
   paterno: '',
@@ -30,7 +31,7 @@ inicializarErrores();
 
 const validateField = (field) => {
   let validate_required = ['nombre', 'paterno', 'curp', 'rfc', 'cp', 'calle', 'exterior', 'estado', 'delegacion', 'colonia'];
-  let validate_string = ['nombre', 'paterno', 'materno', 'estado', 'delegacion', 'colonia'];
+  let validate_string = ['nombre', 'paterno', 'estado', 'delegacion', 'colonia'];
   let validate_integer = ['cp', 'exterior'];
   let validate_alfanumerico = ['interior'];
 
@@ -46,7 +47,12 @@ const validateField = (field) => {
   } else if (validate_alfanumerico.includes(field) && !/^[a-zA-Z0-9]+$/.test(form[field])) {
     error[`${field}Valid`] = `El campo ${field} solo puede contener números y letras.`;
 
-  } else {
+  } else if (form['materno'] === '') {
+    error[`${field}Valid`] = ``;
+  } else if (!/^[A-Za-z]+$/i.test(form['materno'])) {
+    error[`${field}Valid`] = `El campo ${field} solo puede contener letras.`;
+  }
+  else {
     error[`${field}Valid`] = ''
   }
 };
@@ -123,11 +129,32 @@ const onSubmit = async () => {
       'colonia': form.colonia
     }
   };
-  const response = await postAPI.crear_post(payload)
-  if (!response.data)
-    swal("Ops", "Algo salio mal...", "warning");
 
-  swal("Nuevo registro", "Se realizo una captura de un nuevo registro.", "success");
+  swal({
+    title: "Estas seguro de esta acción?",
+    text: "Crearas un nuevo registro antes de continuar valida tu información!",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#142DFE",
+    confirmButtonText: "Si, continuar!",
+    cancelButtonText: "No, cancelar!",
+    closeOnConfirm: false,
+    closeOnCancel: false
+  },
+    async function (isConfirm) {
+      if (isConfirm) {
+        const response = await postAPI.crear_post(payload)
+        if (!response.data)
+          swal("Ops", "Algo salio mal...", "warning");
+
+        swal("Nuevo registro", "Se realizo una captura de un nuevo registro.", "success");
+        route.push({ name: 'usuarios' })
+        await route.push({ path: '/usuarios' });
+      } else {
+        swal("Cancelado", "Cancelaste esta acción", "error");
+      }
+    });
+
 };
 
 for (const field in form) {
@@ -137,7 +164,7 @@ for (const field in form) {
 
 
 <template>
-  <div class="row justify-content-center">
+  <div class="row justify-content-center animate__animated animate__backInLeft">
     <div class="col-md-8">
       <div class="h3 text-center mb-4">Identificación</div>
       <div class="card shadow">

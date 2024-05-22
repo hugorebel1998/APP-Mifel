@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-content-center">
+  <div class="row justify-content-center animate__animated animate__backInLeft">
     <div class="col-md-6">
       <div class="alert alert-primary" role="alert">
         <div class="h1 text-center">Bienvenido</div>
@@ -9,7 +9,7 @@
     </div>
   </div>
 
-  <div class="row mt-5">
+  <div class="row mt-5 animate__animated animate__backInLeft">
     <div class="col-md-4">
       <div class="card shadow">
         <div class="card-body">
