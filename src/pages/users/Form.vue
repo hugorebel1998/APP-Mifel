@@ -166,9 +166,10 @@ for (const field in form) {
 <template>
   <div class="row justify-content-center animate__animated animate__backInLeft">
     <div class="col-md-8">
-      <div class="h3 text-center mb-4">Identificación</div>
       <div class="card shadow">
-        <div class="card-body my-5 mx-4">
+        <div class="card-header bg-mifel py-3" />
+        <div class="card-body mx-4">
+          <div class="h3 text-center mb-5">Identificación</div>
           <form @submit.prevent="onSubmit">
             <div class="row gy-4">
               <div class="col-md-4">
@@ -239,7 +240,7 @@ for (const field in form) {
               </div>
 
               <div class="col-md-4">
-                <label for="numero_interior" class="text-success">Número interior
+                <label for="numero_interior" class="text-success">Número interior *
                 </label>
                 <input type="text" v-model="form.interior" class="form-control" :class="{
                   'is-invalid': error.interiorValid,
@@ -291,10 +292,10 @@ for (const field in form) {
               </div>
             </div>
             <div class="text-center mt-5">
-              <router-link :to="{ name: 'usuarios' }" class="btn btn-outline-secondary mx-2">
+              <router-link :to="{ name: 'usuarios' }" class="btn btn-mifel mx-2">
                 <i class="fas fa-arrow-left"></i> Atras
               </router-link>
-              <button type="submit" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Guardar</button>
+              <button type="submit" class="btn btn-mifel-blue"><i class="fas fa-plus"></i> Guardar</button>
             </div>
           </form>
         </div>

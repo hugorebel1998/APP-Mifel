@@ -42,13 +42,13 @@ const onDeleteUser = (usuario_id) => {
     <div class="h3 mb-4">Gestión de usuarios</div>
     <div class="d-flex bd-highlight mb-3">
       <div>
-        <router-link :to="{ name: 'usuarios-crear' }" class="btn btn-outline-success mx-2">
+        <router-link :to="{ name: 'usuarios-crear' }" class="btn btn-mifel-blue mx-2">
           <i class="fas fa-plus"></i> Nuevo usuario
         </router-link>
       </div>
 
       <div>
-        <button @click="loadUsuarios()" class="btn btn-outline-info mx-2">
+        <button @click="loadUsuarios()" class="btn btn-mifel mx-2">
           <i class="fas fa-sync-alt"></i> Actualizar
         </button>
       </div>
@@ -57,7 +57,7 @@ const onDeleteUser = (usuario_id) => {
       <div class="card-body">
         <div class="table-responsive-sm">
           <table class="table table table-striped table-hover">
-            <thead>
+            <thead class="bg-mifel text-white">
               <tr>
                 <th scope="col">Identificador</th>
                 <th scope="col">Nombre</th>
@@ -77,7 +77,7 @@ const onDeleteUser = (usuario_id) => {
                 <td>
                   <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group" role="group">
-                      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle"
+                      <button id="btnGroupDrop1" type="button" class="btn btn-mifel-blue dropdown-toggle"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-cogs"></i> Aciones
                       </button>
@@ -89,8 +89,7 @@ const onDeleteUser = (usuario_id) => {
                         </li>
                         <li>
                           <button @click="onDeleteUser(usuario.id)" class="dropdown-item"><i
-                              class="fas fa-trash-alt"></i> Eliinar
-                            usuario</button>
+                              class="fas fa-trash-alt"></i> Eliminar usuario</button>
                         </li>
                       </ul>
                     </div>
